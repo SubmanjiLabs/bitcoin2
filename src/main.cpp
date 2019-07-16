@@ -3842,7 +3842,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
     // Check timestamp
     LogPrint("debug", "%s: block=%s  is proof of stake=%d\n", __func__, block.GetHash().ToString().c_str(), block.IsProofOfStake());
-    if (block.GetBlockTime() > GetAdjustedTime() + (block.IsProofOfStake() ? 40 : 7200)) // 40 second future drift for PoS
+    if (block.GetBlockTime() > GetAdjustedTime() + (block.IsProofOfStake() ? MIN_STAKE_SIZE_TIMESTAMP : 7200)) // Avoid small timestamps (nothing at stake attack: https://github.com/initc3/i-cant-believe-its-not-stake/blob/master/qtum/qtum-nothingatstake.py#L32)
         return state.Invalid(error("CheckBlock() : block timestamp too far in the future"),
             REJECT_INVALID, "time-too-new");
 
